@@ -3,6 +3,8 @@ local w = love.graphics.getWidth()
 
 local scale = 4
 local count = 10
+local maxCount = 19
+local minCount = 4
 local series = {}
 local basecolors = {{255,255,0, 255},
             {255,165,0},
@@ -97,8 +99,8 @@ function getRectangles()
 end
 
 function getParticles()
-    local ox = 0
-    local oy = 0
+    local ox = 1
+    local oy = 1
     local p = {}
     for i,v in ipairs(series) do
         local px = ox
@@ -117,8 +119,15 @@ function getParticles()
     return p
 end
 
+function regenerate()
+    series = fibonacci()
+    scale = getScale()
+    rectangles = getRectangles()
+    particles = getParticles()
+end
+
 function love.load()
-    love.graphics.setBackgroundColor(0, 0, 0)
+    love.graphics.setBackgroundColor(200, 200, 200)
     series = fibonacci()
     scale = getScale()
     colors = getColors()
@@ -128,21 +137,15 @@ end
 
 function love.keypressed(key)
     if key == "up" then
-        if count < 19 then
+        if count < maxCount then
             count = count + 1
-            series = fibonacci()
-            scale = getScale()
-            rectangles = getRectangles()
-            particles = getParticles()
+            regenerate()
         end
     end
     if key == "down" then
-        if count > 4 then
+        if count > minCount then
             count = count - 1
-            series = fibonacci()
-            scale = getScale()
-            rectangles = getRectangles()
-            particles = getParticles()
+            regenerate()
         end
     end
     if key == "e" then
