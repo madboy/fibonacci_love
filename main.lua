@@ -30,6 +30,10 @@ local basecolors = {{255,255,0, 255},
             {25,25,112}}
 
 local colors = {}
+local rectState = true
+
+local rectangles = {}
+local particles = {}
 
 function fib(n)
     if n <= 0 then
@@ -77,11 +81,49 @@ function getColors()
     return c
 end
 
+function getRectangles()
+    local ox = 0
+    local oy = 0
+    local r = {}
+    for i,v in ipairs(series) do
+        table.insert(r, {x=ox, y=oy, h=v, w=v})
+        if odd(i) then
+            ox = ox + v
+        else
+            oy = oy + v
+        end
+    end
+    return r
+end
+
+function getParticles()
+    local ox = 0
+    local oy = 0
+    local p = {}
+    for i,v in ipairs(series) do
+        local px = ox
+        local py = oy
+        for c = 1,v do
+            table.insert(p, {x=px, y=py, i=i})
+            px = px + 1
+            py = py + 1
+        end
+        if odd(i) then
+            ox = ox + v
+        else
+            oy = oy + v
+        end
+    end
+    return p
+end
+
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
     series = fibonacci()
-    scale = setScale()
+    scale = getScale()
     colors = getColors()
+    rectangles = getRectangles()
+    particles = getParticles()
 end
 
 function love.keypressed(key)
@@ -90,6 +132,8 @@ function love.keypressed(key)
             count = count + 1
             series = fibonacci()
             scale = getScale()
+            rectangles = getRectangles()
+            particles = getParticles()
         end
     end
     if key == "down" then
@@ -97,7 +141,12 @@ function love.keypressed(key)
             count = count - 1
             series = fibonacci()
             scale = getScale()
+            rectangles = getRectangles()
+            particles = getParticles()
         end
+    end
+    if key == "e" then
+        rectState = not rectState
     end
 end
 
@@ -106,16 +155,18 @@ function love.draw()
     local y = 0
     love.graphics.push()
     love.graphics.scale(scale, scale)
-    for i,v in ipairs(series) do
-        love.graphics.setColor(colors[i])
-        love.graphics.rectangle("fill", x, y, v, v)
-        if odd(i) then
-            x = x + v
-        else
-            y = y + v
+    if rectState then
+        for i,r in ipairs(rectangles) do
+            love.graphics.setColor(colors[i])
+            love.graphics.rectangle("fill", r.x, r.y, r.w, r.h)
+        end
+    else
+        for _,p in ipairs(particles) do
+            love.graphics.setColor(colors[p.i])
+            love.graphics.point(p.x, p.y)
         end
     end
     love.graphics.pop()
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(255,255,255)
     love.graphics.print(string.format("%d %d", #series, series[1]), 0, 0)
 end
