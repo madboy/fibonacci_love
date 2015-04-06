@@ -1,5 +1,5 @@
-local h = 600
-local w = 800
+local h = love.graphics.getHeight()
+local w = love.graphics.getWidth()
 
 local scale = 4
 local count = 10
@@ -57,7 +57,7 @@ function odd(v)
     end
 end
 
-function setScale()
+function getScale()
     local s = 0
     while (series[1]+series[2])*(s+0.1) < w do
         s = s + 0.1
@@ -68,8 +68,11 @@ end
 function getColors()
     math.randomseed(os.time())
     local c = {}
-    for i = 1,25 do
-        table.insert(c, basecolors[math.random(#basecolors)])
+    local base = basecolors
+    for i = 1,#basecolors do
+        local r = math.random(#base)
+        table.insert(c, base[r])
+        table.remove(base, r)
     end
     return c
 end
@@ -86,14 +89,14 @@ function love.keypressed(key)
         if count < 19 then
             count = count + 1
             series = fibonacci()
-            scale = setScale()
+            scale = getScale()
         end
     end
     if key == "down" then
         if count > 4 then
             count = count - 1
             series = fibonacci()
-            scale = setScale()
+            scale = getScale()
         end
     end
 end
