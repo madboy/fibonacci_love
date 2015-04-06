@@ -4,7 +4,7 @@ local w = 800
 local scale = 4
 local count = 10
 local series = {}
-local colors = {{255,255,0, 255},
+local basecolors = {{255,255,0, 255},
             {255,165,0},
             {255,140,0},
             {184,134,11},
@@ -19,7 +19,17 @@ local colors = {{255,255,0, 255},
             {255,0,255},
             {255,20,147},
             {208,32,144},
-            {139,0,139}}
+            {139,0,139},
+            {46,139,87},
+            {0,128,0},
+            {107,142,35},
+            {0,100,0},
+            {0,191,255},
+            {65,105,225},
+            {0,0,255},
+            {25,25,112}}
+
+local colors = {}
 
 function fib(n)
     if n <= 0 then
@@ -55,6 +65,15 @@ function setScale()
     return s
 end
 
+function getColors()
+    math.randomseed(os.time())
+    local c = {}
+    for i = 1,25 do
+        table.insert(c, basecolors[math.random(#basecolors)])
+    end
+    return c
+end
+
 function love.conf(t)
     t.title = "fibonacci"
     t.screen.height = h
@@ -65,19 +84,23 @@ function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
     series = fibonacci()
     scale = setScale()
+    colors = getColors()
 end
 
 function love.keypressed(key)
     if key == "up" then
-        count = count + 1
-        series = fibonacci()
-        scale = setScale()
+        if count < 19 then
+            count = count + 1
+            series = fibonacci()
+            scale = setScale()
+        end
     end
     if key == "down" then
-        count = count - 1
-        series = fibonacci()
-        scale = setScale()
-        
+        if count > 4 then
+            count = count - 1
+            series = fibonacci()
+            scale = setScale()
+        end
     end
 end
 
