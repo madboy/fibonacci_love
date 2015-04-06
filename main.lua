@@ -74,12 +74,6 @@ function getColors()
     return c
 end
 
-function love.conf(t)
-    t.title = "fibonacci"
-    t.screen.height = h
-    t.screen.width = w
-end
-
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
     series = fibonacci()
