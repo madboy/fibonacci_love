@@ -1,6 +1,22 @@
 local scale = 8
-local count = 9
+local count = 10
 local series = {}
+local colors = {{255,255,0, 255},
+            {255,165,0},
+            {255,140,0},
+            {184,134,11},
+            {250,128,114},
+            {205,92,92},
+            {165,42,42},
+            {178,34,34},
+            {255,99,71},
+            {255,0,0},
+            {210,105,30},
+            {128,0,0},
+            {255,0,255},
+            {255,20,147},
+            {208,32,144},
+            {139,0,139}}
 
 function fib(n)
     if n <= 0 then
@@ -44,7 +60,7 @@ function love.draw()
     local y = 0
     love.graphics.scale(scale, scale)
     for i,v in ipairs(series) do
-        love.graphics.setColor(255/v, 255/v, 255/v)
+        love.graphics.setColor(colors[i])
         love.graphics.rectangle("fill", x, y, v, v)
         if odd(i) then
             x = x + v
