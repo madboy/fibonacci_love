@@ -1,4 +1,7 @@
-local scale = 8
+local h = 600
+local w = 800
+
+local scale = 4
 local count = 10
 local series = {}
 local colors = {{255,255,0, 255},
@@ -44,20 +47,44 @@ function odd(v)
     end
 end
 
+function setScale()
+    local s = 0
+    while (series[1]+series[2])*(s+0.1) < w do
+        s = s + 0.1
+    end
+    return s
+end
+
 function love.conf(t)
     t.title = "fibonacci"
-    t.screen.height = 600
-    t.screen.width = 800
+    t.screen.height = h
+    t.screen.width = w
 end
 
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
     series = fibonacci()
+    scale = setScale()
+end
+
+function love.keypressed(key)
+    if key == "up" then
+        count = count + 1
+        series = fibonacci()
+        scale = setScale()
+    end
+    if key == "down" then
+        count = count - 1
+        series = fibonacci()
+        scale = setScale()
+        
+    end
 end
 
 function love.draw()
     local x = 0
     local y = 0
+    love.graphics.push()
     love.graphics.scale(scale, scale)
     for i,v in ipairs(series) do
         love.graphics.setColor(colors[i])
@@ -68,4 +95,7 @@ function love.draw()
             y = y + v
         end
     end
+    love.graphics.pop()
+    love.graphics.setColor(0,0,0)
+    love.graphics.print(string.format("%d %d", #series, series[1]), 0, 0)
 end
