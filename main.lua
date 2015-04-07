@@ -6,7 +6,7 @@ local count = 10
 local maxCount = 19
 local minCount = 4
 local series = {}
-local basecolors = {{255,255,0, 255},
+local basecolors = {{255,255,0},
             {255,165,0},
             {255,140,0},
             {184,134,11},
@@ -29,7 +29,13 @@ local basecolors = {{255,255,0, 255},
             {0,191,255},
             {65,105,225},
             {0,0,255},
-            {25,25,112}}
+            {25,25,112},
+            {219,112,147},
+            {244,164,96},
+            {255,160,122},
+            {238,232,170},
+            {60,179,113},
+            {135,206,235}}
 
 local colors = {}
 local rectState = true
@@ -83,7 +89,8 @@ function getColors()
     return c
 end
 
-function getRectangles()
+function getRectangles(data)
+    local series = data
     local ox = 0
     local oy = 0
     local r = {}
@@ -98,7 +105,8 @@ function getRectangles()
     return r
 end
 
-function getParticles()
+function getParticles(data)
+    local series = data
     local ox = 1
     local oy = 1
     local p = {}
@@ -121,17 +129,14 @@ end
 function regenerate()
     series = fibonacci()
     scale = getScale()
-    rectangles = getRectangles()
-    particles = getParticles()
+    rectangles = getRectangles(series)
+    particles = getParticles(series)
 end
 
 function love.load()
     love.graphics.setBackgroundColor(200, 200, 200)
-    series = fibonacci()
-    scale = getScale()
     colors = getColors()
-    rectangles = getRectangles()
-    particles = getParticles()
+    regenerate()
 end
 
 function love.keypressed(key)
@@ -153,8 +158,6 @@ function love.keypressed(key)
 end
 
 function love.draw()
-    local x = 0
-    local y = 0
     love.graphics.push()
     love.graphics.scale(scale, scale)
     if rectState then
