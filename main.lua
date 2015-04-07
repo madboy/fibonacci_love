@@ -112,10 +112,8 @@ function getParticles(data)
     local p = {}
     math.randomseed(os.time())
     for i,v in ipairs(series) do
-        local px = ox
-        local py = oy
         for c = 1,v do
-            table.insert(p, {x=math.random(px, px+v), y=math.random(py, py+v), i=i})
+            table.insert(p, {x=math.random(ox, ox+v), y=math.random(oy, oy+v), i=i})
         end
         if odd(i) then
             ox = ox + v
