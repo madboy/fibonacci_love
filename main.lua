@@ -69,6 +69,14 @@ function odd(v)
     end
 end
 
+function sum(t)
+    local s = 0
+    for _,v in ipairs(t) do
+        s = s + v
+    end
+    return s
+end
+
 function getScale()
     local s = 0
     while (series[1]+series[2])*(s+0.1) < w do
