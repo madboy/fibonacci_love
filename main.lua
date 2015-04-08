@@ -82,7 +82,7 @@ function getScale()
     while (series[1]+series[2])*(s+0.1) < w do
         s = s + 0.1
     end
-    return s
+    return 1
 end
 
 function getColors()
@@ -113,6 +113,56 @@ function getRectangles(data)
     return r
 end
 
+function calculateWeights(data)
+    local s = sum(data)
+    local w = {}
+    for _,v in ipairs(data) do
+        table.insert(w, v/s)
+    end
+    return w
+end
+
+function printTable(t)
+    for _,v in ipairs(t) do
+        print(v)
+    end
+end
+
+function printPairs(t)
+    for k,v in pairs(t) do
+        print(k,v)
+    end
+end
+
+function getEqualRectangles(data)
+    local series = calculateWeights(data)
+    local area = h*w
+    local lh = h
+    local lw = w
+    local ox = 0
+    local oy = 0
+    local divisions = {}
+    for i,v in ipairs(series) do
+        local r = {x=ox, y=oy, h=0, w=0}
+        if i == #series then
+            r.h = lh
+            r.w = lw
+        elseif odd(i) then
+            r.h = lh
+            r.w = (area * v) / lw
+            lw = lw - r.w
+            ox = ox + r.w
+        else
+            r.h = (area * v ) / lh
+            r.w = lw
+            lh = lh - r.h
+            oy = oy + r.h
+        end
+        table.insert(divisions, r)
+    end
+    return divisions
+end
+
 function getParticles(data)
     local series = data
     local ox = 1
@@ -135,7 +185,8 @@ end
 function regenerate()
     series = fibonacci()
     scale = getScale()
-    rectangles = getRectangles(series)
+    --rectangles = getRectangles(series)
+    rectangles = getEqualRectangles(series)
     particles = getParticles(series)
 end
 
