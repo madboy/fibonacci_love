@@ -14,14 +14,21 @@ def get_rects(weights, width, height):
     rects = []
     x = 0
     y = 0
+    lh = height
+    lw = width
     for i, weight in enumerate(weights):
-        w = width * weight
-        h = height * weight
-        rects.append((w, h, x, y))
         if odd(i):
+            h = lh
+            w = (width * height * weight) / h
+            rects.append((w, h, x, y))
             x += w
+            lw = lw - w
         else:
+            w = lw
+            h = (width * height * weight) / w
+            rects.append((w, h, x, y))
             y += h
+            lh = lh - h
     return rects
 
 if __name__ == '__main__':
