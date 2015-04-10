@@ -136,29 +136,27 @@ end
 
 function getEqualRectangles(data)
     local series = calculateWeights(data)
-    local area = h*w
-    local lh = h
-    local lw = w
+    local divisions = {}
+    local area = h * w
     local ox = 0
     local oy = 0
-    local divisions = {}
+    local lh = h
+    local lw = w
     for i,v in ipairs(series) do
         local r = {x=ox, y=oy, h=0, w=0}
-        if i == #series then
+        if odd(i) then
             r.h = lh
-            r.w = lw
-        elseif odd(i) then
-            r.h = lh
-            r.w = (area * v) / lw
-            lw = lw - r.w
+            r.w = (area * v) / r.h
+            table.insert(divisions, r)
             ox = ox + r.w
+            lw = lw - r.w
         else
-            r.h = (area * v ) / lh
             r.w = lw
-            lh = lh - r.h
+            r.h = (area * v) / r.w
+            table.insert(divisions, r)
             oy = oy + r.h
+            lh = lh - r.h
         end
-        table.insert(divisions, r)
     end
     return divisions
 end
