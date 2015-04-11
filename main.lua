@@ -188,6 +188,8 @@ function love.keypressed(key)
     if key == "e" then
         rectState = not rectState
     end
+    -- Save files are saved in love dir
+    -- see https://www.love2d.org/wiki/love.filesystem
     if key == "p" then
         local screenshot = love.graphics.newScreenshot()
         screenshot:encode(os.time() .. '.png')
