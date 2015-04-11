@@ -97,22 +97,6 @@ function getColors()
     return c
 end
 
-function getRectangles(data)
-    local series = data
-    local ox = 0
-    local oy = 0
-    local r = {}
-    for i,v in ipairs(series) do
-        table.insert(r, {x=ox, y=oy, h=v, w=v})
-        if odd(i) then
-            ox = ox + v
-        else
-            oy = oy + v
-        end
-    end
-    return r
-end
-
 function calculateWeights(data)
     local s = sum(data)
     local w = {}
@@ -134,7 +118,7 @@ function printPairs(t)
     end
 end
 
-function getEqualRectangles(data)
+function getRectangles(data)
     local series = calculateWeights(data)
     local divisions = {}
     local area = h * w
@@ -162,19 +146,11 @@ function getEqualRectangles(data)
 end
 
 function getParticles(data)
-    local series = data
-    local ox = 1
-    local oy = 1
+    local rects = data
     local p = {}
-    math.randomseed(os.time())
-    for i,v in ipairs(series) do
-        for c = 1,v do
-            table.insert(p, {x=math.random(ox, ox+v), y=math.random(oy, oy+v), i=i})
-        end
-        if odd(i) then
-            ox = ox + v
-        else
-            oy = oy + v
+    for i,r in ipairs(rects) do
+        for c = 1,series[i] do
+            table.insert(p, {x=math.random(r.x, r.x+r.w), y=math.random(r.y, r.y+r.h), i=i})
         end
     end
     return p
@@ -183,15 +159,16 @@ end
 function regenerate()
     series = fibonacci()
     scale = getScale()
-    --rectangles = getRectangles(series)
-    rectangles = getEqualRectangles(series)
-    particles = getParticles(series)
+    rectangles = getRectangles(series)
+    particles = getParticles(rectangles)
 end
 
 function love.load()
-    love.graphics.setBackgroundColor(200, 200, 200)
+    love.graphics.setBackgroundColor(115, 115, 115)
     colors = getColors()
     regenerate()
+    local ps = love.graphics.getPointSize() + 2
+    love.graphics.setPointSize(ps)
 end
 
 function love.keypressed(key)
