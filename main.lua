@@ -169,6 +169,7 @@ function love.load()
     regenerate()
     local ps = love.graphics.getPointSize() + 2
     love.graphics.setPointSize(ps)
+    love.filesystem.setIdentity('fibonacci_love')
 end
 
 function love.keypressed(key)
@@ -186,6 +187,10 @@ function love.keypressed(key)
     end
     if key == "e" then
         rectState = not rectState
+    end
+    if key == "p" then
+        local screenshot = love.graphics.newScreenshot()
+        screenshot:encode(os.time() .. '.png')
     end
 end
 
